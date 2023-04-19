@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     SpriteRenderer spriter;
     Animator anim;
     public Scaner scanner;
+    public Hand[] hands;
     public float speed;
     void Awake()
     {
@@ -16,22 +17,32 @@ public class Player : MonoBehaviour
         spriter = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         scanner = GetComponent<Scaner>();
+        hands = GetComponentsInChildren<Hand>(true);
     }
 
     void Update()
     {
+        if (!GameManager.instance.isLive)
+            return;
+
         inputVec.x = Input.GetAxisRaw("Horizontal");
         inputVec.y = Input.GetAxisRaw("Vertical");
     }
     
     void FixedUpdate()
     {
+        if (!GameManager.instance.isLive)
+            return;
+
         Vector2 nextVec = inputVec.normalized * speed * Time.deltaTime;
         rigid.MovePosition(rigid.position + nextVec);
     }
 
     void LateUpdate()
     {
+        if (!GameManager.instance.isLive)
+            return;
+            
         anim.SetFloat("Speed", inputVec.magnitude);
         if (inputVec.x != 0){
             spriter.flipX = inputVec.x < 0;
